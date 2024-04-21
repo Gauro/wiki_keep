@@ -218,10 +218,10 @@ class DBInit:
                     # Read the entire contents of the file
                     file_contents = file.read()
                 tag_dict = {
+                    "id": article.id,
                     "title": article.title,
                     "content": file_contents,
                     "sentiment": article.sentiment
-                    # Add more fields if needed
                 }
                 articles.append(tag_dict)
 
