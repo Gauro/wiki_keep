@@ -108,6 +108,21 @@ def filter_articles_on_tag(tag: str, user_id: int):
         print(e)
 
 
+@app.get("/modify_tag")
+def filter_articles_on_tag(tag: str, article_id: int, user_id: int):
+    try:
+        ldict_response = dict()
+        db_obj = DBInit()
+        lbool = db_obj.modify_tag(tag=tag, article_id=article_id, user_id=user_id)
+        if not lbool:
+            raise HTTPException(status_code=401, detail="Invalid")
+        else:
+            ldict_response = {"message": "successfully update tag", "tag": lbool}
+        return ldict_response
+    except Exception as e:
+        print(e)
+
+
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
@@ -205,7 +220,7 @@ async def websocket_endpoint(websocket: WebSocket):
                 else:
                     ldict_response = {"message": "successfully update tag", "tag": lbool}
                 await websocket.send_text(json.dumps(ldict_response))
-                
+
     except websockets.exceptions.ConnectionClosed:
         print("WebSocket disconnected")
 
