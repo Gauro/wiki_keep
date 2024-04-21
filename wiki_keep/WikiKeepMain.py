@@ -192,6 +192,20 @@ async def websocket_endpoint(websocket: WebSocket):
                 else:
                     ldict_response = {"message": "User logged in successfully", "user_id": user_id}
                 await websocket.send_text(json.dumps(ldict_response))
+
+            elif action == "modify_tag":
+                db_obj = DBInit()
+
+                tag = data_parts['tag']
+                article_id = data_parts['article_id']
+                user_id = data_parts['user_id']
+                lbool = db_obj.modify_tag(tag=tag, article_id=article_id, user_id=user_id)
+                if not lbool:
+                    raise HTTPException(status_code=401, detail="Invalid")
+                else:
+                    ldict_response = {"message": "successfully update tag", "tag": lbool}
+                await websocket.send_text(json.dumps(ldict_response))
+                
     except websockets.exceptions.ConnectionClosed:
         print("WebSocket disconnected")
 

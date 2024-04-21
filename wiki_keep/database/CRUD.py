@@ -155,6 +155,37 @@ class DBInit:
         except Exception as e:
             print(e)
 
+    def modify_tag(self, tag, article_id, user_id):
+        try:
+            valid_user = False
+            # Query the User table to retrieve the user with the provided username
+            session = SessionLocal()
+
+            tag_detail = session.query(Tags).filter(Tags.tag_name == tag).first()
+
+            if tag_detail == None:
+                new_tag = Tags(tag_name=tag)
+                session.add(new_tag)
+                session.commit()
+                user_tags_articles = session.query(UserTagsArticles).filter(
+                    (UserTagsArticles.user_id == user_id) & (UserTagsArticles.articles_id == article_id)
+                ).first()
+                user_tags_articles.tags_id = new_tag.id
+                session.commit()
+                session.close()
+            else:
+                session = SessionLocal()
+                user_tags_articles = session.query(UserTagsArticles).filter(
+                    (UserTagsArticles.user_id == user_id) & (UserTagsArticles.articles_id == article_id)
+                ).first()
+
+                user_tags_articles.tags_id = tag_detail.id
+                session.commit()
+                session.close()
+            return True
+        except Exception as e:
+            print(e)
+
     def retirve_articles_based_on_tags_users(self, tag: str, user_id: int):
         try:
             session = SessionLocal()
