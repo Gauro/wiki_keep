@@ -108,12 +108,13 @@ def filter_articles_on_tag(tag: str, user_id: int):
         print(e)
 
 
-@app.get("/modify_tag")
-def filter_articles_on_tag(tag: str, article_id: int, user_id: int):
+@app.post("/modify_tag")
+def filter_articles_on_tag(pdict_data: dict):
     try:
         ldict_response = dict()
         db_obj = DBInit()
-        lbool = db_obj.modify_tag(tag=tag, article_id=article_id, user_id=user_id)
+        lbool = db_obj.modify_tag(tag=pdict_data['tag'], article_id=pdict_data['article_id'],
+                                  user_id=pdict_data['user_id'])
         if not lbool:
             raise HTTPException(status_code=401, detail="Invalid")
         else:
